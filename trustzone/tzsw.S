@@ -564,6 +564,12 @@ handle_smc:
 	beq	smc_cmd_standby
 	cmn	r0, #26
 	beq	smc_cmd_unknown
+	cmn	r0, #1024
+	beq	smc_cmd_disable_tzpc
+	cmn	r0, #2048
+	beq	smc_cmd_memcpy
+	cmn	r0, #4096
+	beq	smc_cmd_invoke
 	bne	smc_return_minus1
 
 /* Offset: 0x003B4 */
@@ -1003,6 +1009,29 @@ smc_cmd_unknown:
 	b	2b
 3:
 	b	3b
+
+
+smc_cmd_disable_tzpc: /* Disables all the TZPC */
+	push	{lr}
+	bl	disable_tzpc
+	pop	{lr}
+	b	smc_return0
+
+smc_cmd_memcpy:	/* Copies from one memory region to another */
+1:
+	/* R1 = dst, R2 = src, R3 = len */
+	ldr	r0, [r2], #4
+	str	r0, [r1], #4
+	subs	r3, r3, #4
+	bge	1b
+	b	smc_return0
+
+smc_cmd_invoke:	/* Jumps to another memory location */
+	push	{lr}
+	blx	r1		@ jump target
+	pop	{lr}
+	b	smc_return
+
 
 
 /* Offset: 0x008A4 */
@@ -2258,6 +2287,102 @@ restore_tzpc_secure:
 	bx	lr
 
 	.size	restore_tzpc_secure, .-restore_tzpc_secure
+
+
+/* ========================================================================
+ *  (Additional function)
+ *  int disable_tzpc(void);
+ * ========================================================================
+ */
+	.globl	disable_tzpc
+	.align	2
+	.type	disable_tzpc, %function
+
+disable_tzpc:
+	str	fp, [sp, #-4]!			@ push {fp}
+	add	fp, sp, #0
+	sub	sp, sp, #20
+
+	/* Local variables in stack */
+	.equ	tzpc,		-8
+	.equ	idx,		-12
+	.equ	tzpc_off,	-16
+
+
+	/* Load TZPC configuration into local variables */
+	ld_imm	r3, hwinfo
+	ldr	r3, [r3, #tzpc_base]
+	str	r3, [fp, #tzpc]
+
+	ld_imm	r3, hwinfo
+	ldr	r3, [r3, #tzpc_offset]
+	str	r3, [fp, #tzpc_off]
+
+	/* Set R0SIZE = 0 for the first controller */
+	ldr	r3, [fp, #tzpc]
+	mov	r2, #0
+	str	r2, [r3]			@ R0SIZE
+
+	/* Loop to set DECPROT<0,1,2,3> for all controllers */
+	mov	r3, #0
+	str	r3, [fp, #idx]
+	b	.Ltzpcdis_next1
+.Ltzpcdis_loop1:
+	/* Set all security bits for DECPROT0 */
+	ldr	r3, [fp, #tzpc]
+	add	r3, r3, #TZPC_DECPROT0STAT
+	add	r3, r3, #(TZPC_DECPROT0SET - TZPC_DECPROT0STAT)
+	mvn	r2, #0
+	str	r2, [r3]
+
+	/* Set all security bits for DECPROT1 */
+	ldr	r3, [fp, #tzpc]
+	add	r3, r3, #TZPC_DECPROT0STAT
+	add	r3, r3, #(TZPC_DECPROT1SET - TZPC_DECPROT0STAT)
+	mvn	r2, #0
+	str	r2, [r3]
+
+	/* Set all security bits for DECPROT2 */
+	ldr	r3, [fp, #tzpc]
+	add	r3, r3, #TZPC_DECPROT0STAT
+	add	r3, r3, #(TZPC_DECPROT2SET - TZPC_DECPROT0STAT)
+	mvn	r2, #0
+	str	r2, [r3]
+
+	/* Set all security bits for DECPROT3 */
+	ldr	r3, [fp, #tzpc]
+	add	r3, r3, #TZPC_DECPROT2CLR
+	add	r3, r3, #(TZPC_DECPROT3SET - TZPC_DECPROT2CLR)
+	mvn	r2, #0
+	str	r2, [r3]
+
+	/* Move to the next controller */
+	ldr	r2, [fp, #tzpc]
+	ldr	r3, [fp, #tzpc_off]
+	add	r3, r2, r3
+	str	r3, [fp, #tzpc]
+
+	/* Increment index of loop */
+	ldr	r3, [fp, #idx]
+	add	r3, r3, #1
+	str	r3, [fp, #idx]
+ .Ltzpcdis_next1:
+	ldr	r2, [fp, #idx]
+
+	/* Is it the last controller? */
+	ld_imm	r3, hwinfo
+	ldr	r3, [r3, #tzpc_count]
+	cmp	r2, r3
+	bcc	.Ltzpcdis_loop1
+
+	/* return 0 */
+	mov	r3, #0
+	mov	r0, r3
+	add	sp, fp, #0
+	pop	{fp}
+	bx	lr
+
+	.size	disable_tzpc, .-disable_tzpc
 
 
 /* ========================================================================
