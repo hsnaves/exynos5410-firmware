@@ -76,12 +76,20 @@
 .equ EXYNOS5_GIC_CPU,			(0x10482000)
 .equ EXYNOS5_GIC_DIST,			(0x10481000)
 .equ EXYNOS5_KEY_UNKNOWN,		(0x101A0000)	@ it generates the key for the AES???
+.equ EXYNOS5_ACE_BASE,			(0x10830000)
 .equ EXYNOS5_DREXI_0,			(0x10C20000)
 .equ EXYNOS5_DREXI_1,			(0x10C30000)
 
 /* Some clocks in the CMU */
 .equ EXYNOS5_CLKGATE_IP_ACP,		(EXYNOS5_CMU_BASE + 0x08800)
 .equ EXYNOS5_CLKGATE_BUS_CDREX,		(EXYNOS5_CMU_BASE + 0x20700)
+
+/* Some PMU registers */
+.equ PMU_INFORM0,			(EXYNOS5_PMU_BASE + 0x0800)
+.equ PMU_INFORM1,			(EXYNOS5_PMU_BASE + 0x0804)
+.equ PMU_INFORM2,			(EXYNOS5_PMU_BASE + 0x0808)
+.equ PMU_INFORM3,			(EXYNOS5_PMU_BASE + 0x080C)
+
 
 /* Some DREXI registers */
 .equ DREXI_CTRL,			(0x0000)
@@ -97,61 +105,61 @@
  * more specifically, branch odroidxu-3.4.y
  * of the official Hardkernel repository)
  */
-.equ ACE_FC_INTPEND,			(0x1083000C)
-.equ ACE_FC_FIFOCTRL,			(0x10830014)
-.equ ACE_FC_BRDMAS,			(0x10830020)
-.equ ACE_FC_BRDMAL,			(0x10830024)
-.equ ACE_FC_BRDMAC,			(0x10830028)
-.equ ACE_FC_BTDMAS,			(0x10830030)
-.equ ACE_FC_BTDMAL,			(0x10830034)
-.equ ACE_FC_BTDMAC,			(0x10830038)
-.equ ACE_AES_CONTROL,			(0x10830200)
-.equ ACE_AES_STATUS,			(0x10830204)
-.equ ACE_AES_IV1,			(0x10830230)
-.equ ACE_AES_IV2,			(0x10830234)
-.equ ACE_AES_IV3,			(0x10830238)
-.equ ACE_AES_IV4,			(0x1083023C)
-.equ ACE_AES_KEY5,			(0x10830290)
-.equ ACE_AES_KEY6,			(0x10830294)
-.equ ACE_AES_KEY7,			(0x10830298)
-.equ ACE_AES_KEY8,			(0x1083029C)
-.equ ACE_HASH_CONTROL,			(0x10830400)
-.equ ACE_HASH_FIFO_MODE,		(0x10830408)
-.equ ACE_HASH_BYTESWAP,			(0x1083040C)
-.equ ACE_HASH_STATUS,			(0x10830410)
-.equ ACE_HASH_MSGSIZE_LOW,		(0x10830420)
-.equ ACE_HASH_MSGSIZE_HIGH,		(0x10830424)
-.equ ACE_HASH_PRELEN_LOW,		(0x10830428)
-.equ ACE_HASH_PRELEN_HIGH,		(0x1083042C)
-.equ ACE_HASH_IN1,			(0x10830430)
-.equ ACE_HASH_IN2,			(0x10830434)
-.equ ACE_HASH_IN3,			(0x10830438)
-.equ ACE_HASH_IN4,			(0x1083043C)
-.equ ACE_HASH_IN5,			(0x10830440)
-.equ ACE_HASH_HMAC_KEY_IN1,		(0x10830470)
-.equ ACE_HASH_HMAC_KEY_IN2,		(0x10830474)
-.equ ACE_HASH_HMAC_KEY_IN3,		(0x10830478)
-.equ ACE_HASH_HMAC_KEY_IN4,		(0x1083047C)
-.equ ACE_HASH_HMAC_KEY_IN5,		(0x10830480)
-.equ ACE_HASH_HMAC_KEY_IN6,		(0x10830484)
-.equ ACE_HASH_HMAC_KEY_IN7,		(0x10830488)
-.equ ACE_HASH_HMAC_KEY_IN8,		(0x1083048C)
-.equ ACE_HASH_HMAC_KEY_IN9,		(0x10830490)
-.equ ACE_HASH_HMAC_KEY_IN10,		(0x10830494)
-.equ ACE_HASH_HMAC_KEY_IN11,		(0x10830498)
-.equ ACE_HASH_HMAC_KEY_IN12,		(0x1083049C)
-.equ ACE_HASH_HMAC_KEY_IN13,		(0x108304A0)
-.equ ACE_HASH_HMAC_KEY_IN14,		(0x108304A4)
-.equ ACE_HASH_HMAC_KEY_IN15,		(0x108304A8)
-.equ ACE_HASH_HMAC_KEY_IN16,		(0x108304AC)
-.equ ACE_HASH_RESULT1,			(0x10830500)
-.equ ACE_HASH_RESULT2,			(0x10830504)
-.equ ACE_HASH_RESULT3,			(0x10830508)
-.equ ACE_HASH_RESULT4,			(0x1083050C)
-.equ ACE_HASH_RESULT5,			(0x10830510)
-.equ ACE_HASH_RESULT6,			(0x10830514)
-.equ ACE_HASH_RESULT7,			(0x10830518)
-.equ ACE_HASH_RESULT8,			(0x1083051C)
+.equ ACE_FC_INTPEND,			(EXYNOS5_ACE_BASE + 0x000C)
+.equ ACE_FC_FIFOCTRL,			(EXYNOS5_ACE_BASE + 0x0014)
+.equ ACE_FC_BRDMAS,			(EXYNOS5_ACE_BASE + 0x0020)
+.equ ACE_FC_BRDMAL,			(EXYNOS5_ACE_BASE + 0x0024)
+.equ ACE_FC_BRDMAC,			(EXYNOS5_ACE_BASE + 0x0028)
+.equ ACE_FC_BTDMAS,			(EXYNOS5_ACE_BASE + 0x0030)
+.equ ACE_FC_BTDMAL,			(EXYNOS5_ACE_BASE + 0x0034)
+.equ ACE_FC_BTDMAC,			(EXYNOS5_ACE_BASE + 0x0038)
+.equ ACE_AES_CONTROL,			(EXYNOS5_ACE_BASE + 0x0200)
+.equ ACE_AES_STATUS,			(EXYNOS5_ACE_BASE + 0x0204)
+.equ ACE_AES_IV1,			(EXYNOS5_ACE_BASE + 0x0230)
+.equ ACE_AES_IV2,			(EXYNOS5_ACE_BASE + 0x0234)
+.equ ACE_AES_IV3,			(EXYNOS5_ACE_BASE + 0x0238)
+.equ ACE_AES_IV4,			(EXYNOS5_ACE_BASE + 0x023C)
+.equ ACE_AES_KEY5,			(EXYNOS5_ACE_BASE + 0x0290)
+.equ ACE_AES_KEY6,			(EXYNOS5_ACE_BASE + 0x0294)
+.equ ACE_AES_KEY7,			(EXYNOS5_ACE_BASE + 0x0298)
+.equ ACE_AES_KEY8,			(EXYNOS5_ACE_BASE + 0x029C)
+.equ ACE_HASH_CONTROL,			(EXYNOS5_ACE_BASE + 0x0400)
+.equ ACE_HASH_FIFO_MODE,		(EXYNOS5_ACE_BASE + 0x0408)
+.equ ACE_HASH_BYTESWAP,			(EXYNOS5_ACE_BASE + 0x040C)
+.equ ACE_HASH_STATUS,			(EXYNOS5_ACE_BASE + 0x0410)
+.equ ACE_HASH_MSGSIZE_LOW,		(EXYNOS5_ACE_BASE + 0x0420)
+.equ ACE_HASH_MSGSIZE_HIGH,		(EXYNOS5_ACE_BASE + 0x0424)
+.equ ACE_HASH_PRELEN_LOW,		(EXYNOS5_ACE_BASE + 0x0428)
+.equ ACE_HASH_PRELEN_HIGH,		(EXYNOS5_ACE_BASE + 0x042C)
+.equ ACE_HASH_IN1,			(EXYNOS5_ACE_BASE + 0x0430)
+.equ ACE_HASH_IN2,			(EXYNOS5_ACE_BASE + 0x0434)
+.equ ACE_HASH_IN3,			(EXYNOS5_ACE_BASE + 0x0438)
+.equ ACE_HASH_IN4,			(EXYNOS5_ACE_BASE + 0x043C)
+.equ ACE_HASH_IN5,			(EXYNOS5_ACE_BASE + 0x0440)
+.equ ACE_HASH_HMAC_KEY_IN1,		(EXYNOS5_ACE_BASE + 0x0470)
+.equ ACE_HASH_HMAC_KEY_IN2,		(EXYNOS5_ACE_BASE + 0x0474)
+.equ ACE_HASH_HMAC_KEY_IN3,		(EXYNOS5_ACE_BASE + 0x0478)
+.equ ACE_HASH_HMAC_KEY_IN4,		(EXYNOS5_ACE_BASE + 0x047C)
+.equ ACE_HASH_HMAC_KEY_IN5,		(EXYNOS5_ACE_BASE + 0x0480)
+.equ ACE_HASH_HMAC_KEY_IN6,		(EXYNOS5_ACE_BASE + 0x0484)
+.equ ACE_HASH_HMAC_KEY_IN7,		(EXYNOS5_ACE_BASE + 0x0488)
+.equ ACE_HASH_HMAC_KEY_IN8,		(EXYNOS5_ACE_BASE + 0x048C)
+.equ ACE_HASH_HMAC_KEY_IN9,		(EXYNOS5_ACE_BASE + 0x0490)
+.equ ACE_HASH_HMAC_KEY_IN10,		(EXYNOS5_ACE_BASE + 0x0494)
+.equ ACE_HASH_HMAC_KEY_IN11,		(EXYNOS5_ACE_BASE + 0x0498)
+.equ ACE_HASH_HMAC_KEY_IN12,		(EXYNOS5_ACE_BASE + 0x049C)
+.equ ACE_HASH_HMAC_KEY_IN13,		(EXYNOS5_ACE_BASE + 0x04A0)
+.equ ACE_HASH_HMAC_KEY_IN14,		(EXYNOS5_ACE_BASE + 0x04A4)
+.equ ACE_HASH_HMAC_KEY_IN15,		(EXYNOS5_ACE_BASE + 0x04A8)
+.equ ACE_HASH_HMAC_KEY_IN16,		(EXYNOS5_ACE_BASE + 0x04AC)
+.equ ACE_HASH_RESULT1,			(EXYNOS5_ACE_BASE + 0x0500)
+.equ ACE_HASH_RESULT2,			(EXYNOS5_ACE_BASE + 0x0504)
+.equ ACE_HASH_RESULT3,			(EXYNOS5_ACE_BASE + 0x0508)
+.equ ACE_HASH_RESULT4,			(EXYNOS5_ACE_BASE + 0x050C)
+.equ ACE_HASH_RESULT5,			(EXYNOS5_ACE_BASE + 0x0510)
+.equ ACE_HASH_RESULT6,			(EXYNOS5_ACE_BASE + 0x0514)
+.equ ACE_HASH_RESULT7,			(EXYNOS5_ACE_BASE + 0x0518)
+.equ ACE_HASH_RESULT8,			(EXYNOS5_ACE_BASE + 0x051C)
 
 
 
@@ -683,15 +691,12 @@ smc_cmd_sleep:
 	bl	save_hwstate_secure
 
 	/* PMU Controller stuff */
-	/* The actual meaning of the registers is a wild guess
-	 * based on the manual of S5PC110.
-	 */
-	ldr	r0, =(EXYNOS5_PMU_BASE + 0x0800)	@ ???
+	ldr	r0, =(PMU_INFORM0)
 	ldr	r1, =(0x02073008)
 	ldr	r1, [r1]
 	str	r1, [r0]
 
-	ldr	r0, =(EXYNOS5_PMU_BASE + 0x0804)	@ ???
+	ldr	r0, =(PMU_INFORM1)
 	ldr	r1, =(0x0207300C)
 	ldr	r1, [r1]
 	str	r1, [r0]
@@ -815,11 +820,11 @@ smc_cmd_sleep:
 	bne	4b
 
 sleep_fail:
-	ldr	r0, =(EXYNOS5_PMU_BASE + 0x0800)	@ ???
+	ldr	r0, =(PMU_INFORM0)
 	mov	r1, #0
 	str	r1, [r0]
 
-	ldr	r0, =(EXYNOS5_PMU_BASE + 0x0804)	@ ???
+	ldr	r0, =(PMU_INFORM1)
 	str	r1, [r0]
 
 	/* TZPC11_BASE */
@@ -1023,7 +1028,7 @@ smc_cmd_memcpy:	/* Copies from one memory region to another */
 	ldr	r0, [r2], #4
 	str	r0, [r1], #4
 	subs	r3, r3, #4
-	bge	1b
+	bgt	1b
 	b	smc_return0
 
 smc_cmd_invoke:	/* Jumps to another memory location */
@@ -2292,6 +2297,10 @@ restore_tzpc_secure:
 /* ========================================================================
  *  (Additional function)
  *  int disable_tzpc(void);
+ *
+ *  What I have found so far:
+ *   o TZPC0 at 0x10100000 controls secure iRAM at 0x02020000
+ *   o iROM is never accessible from the non-secure world.
  * ========================================================================
  */
 	.globl	disable_tzpc
@@ -2318,16 +2327,16 @@ disable_tzpc:
 	ldr	r3, [r3, #tzpc_offset]
 	str	r3, [fp, #tzpc_off]
 
-	/* Set R0SIZE = 0 for the first controller */
-	ldr	r3, [fp, #tzpc]
-	mov	r2, #0
-	str	r2, [r3]			@ R0SIZE
-
-	/* Loop to set DECPROT<0,1,2,3> for all controllers */
+	/* Loop to set DECPROT<0,1,2,3> and R0SIZE for all controllers */
 	mov	r3, #0
 	str	r3, [fp, #idx]
 	b	.Ltzpcdis_next1
 .Ltzpcdis_loop1:
+	/* Set R0SIZE = 0 */
+	ldr	r3, [fp, #tzpc]
+	mov	r2, #0
+	str	r2, [r3]			@ R0SIZE
+
 	/* Set all security bits for DECPROT0 */
 	ldr	r3, [fp, #tzpc]
 	add	r3, r3, #TZPC_DECPROT0STAT
