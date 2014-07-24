@@ -16,4 +16,10 @@ SECTIONS
   /DISCARD/ : { *(.interp*) }
   /DISCARD/ : { *(.gnu*) }
   /DISCARD/ : { *(.note.gnu.build-id) *(.ARM.attributes) }
+
+  /* Leave some space for the signature */
+  . = 0x0206FEFF;
+  .fill : {
+    BYTE(0);
+  }
 }
