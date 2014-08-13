@@ -569,6 +569,10 @@ handle_smc:
 	beq	smc_cmd_standby
 	cmn	r0, #26
 	beq	smc_cmd_unknown
+	cmn	r0, #128
+	beq	smc_cmd_enable_debug
+	cmn	r0, #256
+	beq	smc_cmd_set_cntfrq
 	cmn	r0, #1024
 	beq	smc_cmd_disable_tzpc
 	cmn	r0, #2048
@@ -1012,6 +1016,21 @@ smc_cmd_unknown:
 3:
 	b	3b
 
+
+smc_cmd_enable_debug: /* Sets SDER.SUNIDEN and SUIDEN */
+	mrc	p15, 0, r0, c1, c1, 1
+	orr	r0, r0, #0x03
+	mcr	p15, 0, r0, c1, c1, 1
+	mrc	p15, 0, r0, c1, c1, 1
+	/* Return the value read */
+	b	smc_return
+
+smc_cmd_set_cntfrq: /* This sets the CTNFRQ register */
+	/* R1 = CNTFRQ value = 24000000 for Exynos 5410 */
+	/* function returns the value of CNTFRQ */
+	mcr	p15, 0, r1, c14, c0, 0
+	mrc	p15, 0, r0, c14, c0, 0
+	b	smc_return
 
 smc_cmd_disable_tzpc: /* Disables all the TZPC */
 	push	{lr}
