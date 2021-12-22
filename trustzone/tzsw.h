@@ -35,6 +35,7 @@
 #define SMC_CMD_L2X0SETUP2	(-23)
 #define SMC_CMD_L2X0INVALL	(-24)
 #define SMC_CMD_L2X0DEBUG	(-25)
+#define SMC_CMD_SWRESET		(-26)
 
 /* For Accessing CP15/SFR (General) */
 #define SMC_CMD_REG		(-101)
