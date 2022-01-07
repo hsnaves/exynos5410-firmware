@@ -568,7 +568,7 @@ handle_smc:
 	cmn	r0, #7
 	beq	smc_cmd_standby
 	cmn	r0, #26
-	beq	smc_cmd_unknown
+	beq	smc_cmd_swreset
 	cmn	r0, #128
 	beq	smc_cmd_enable_debug
 	cmn	r0, #256
@@ -956,8 +956,7 @@ go_idle:
 
 
 /* Offset: 0x007FC */
-/* Which command is this? */
-smc_cmd_unknown:
+smc_cmd_swreset:
 	ldr	r0, =(EXYNOS5_CLKGATE_BUS_CDREX)
 	ldr	r1, [r0]
 	bic	r1, r1, #0xC0			@ again the same clocks
